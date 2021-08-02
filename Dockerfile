@@ -1,13 +1,14 @@
-FROM wordpress:php7.1-apache
+FROM wordpress:php7.4-apache
 
 # Install the PHP extensions we need
 RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y \
-		mysql-client \
+		default-mysql-client \
 		sudo \
 		zlib1g-dev \
+        libzip-dev \
 	; \
 	apt-get install -y \
 		--no-install-recommends ssl-cert \
@@ -40,6 +41,7 @@ RUN usermod --non-unique --uid 1000 www-data \
 EXPOSE 80 443
 # Overrides wp docker default entrypoint
 COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["apache2-foreground"]
